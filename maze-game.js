@@ -117,11 +117,13 @@ function render() {
     view.clearCanvas();
 
     if (gameState === 'memorizing') {
-        view.drawMaze(maze); // Show walls only during memorizing
+        view.drawGrid(); // Draw grid lines first
+        view.drawMaze(maze); // Draw walls on top
         view.drawFinish(MAZE_SIZE - 1, MAZE_SIZE - 1);
         view.drawPlayer(player);
     } else if (gameState === 'playing') {
-        // No walls during playing, only finish and player
+        // No walls during playing, only grid, finish and player
+        view.drawGrid(); // Show grid lines
         view.drawFinish(MAZE_SIZE - 1, MAZE_SIZE - 1);
         view.drawPlayer(player);
     }
@@ -336,7 +338,7 @@ class GameView {
 
     drawMaze(maze) {
         this.ctx.strokeStyle = "#ffffff"; // White wall color
-        this.ctx.lineWidth = 2;
+        this.ctx.lineWidth = 3; // Increased thickness for better visibility
 
         // Draw outer walls
         this.ctx.strokeRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
@@ -370,6 +372,27 @@ class GameView {
                     }
                 }
             }
+        }
+    }
+
+    drawGrid() {
+        this.ctx.strokeStyle = "#333333"; // Dark gray grid lines
+        this.ctx.lineWidth = 1;
+
+        // Draw horizontal grid lines
+        for (let y = 1; y < MAZE_SIZE; y++) {
+            this.ctx.beginPath();
+            this.ctx.moveTo(0, y * CELL_SIZE);
+            this.ctx.lineTo(CANVAS_SIZE, y * CELL_SIZE);
+            this.ctx.stroke();
+        }
+
+        // Draw vertical grid lines
+        for (let x = 1; x < MAZE_SIZE; x++) {
+            this.ctx.beginPath();
+            this.ctx.moveTo(x * CELL_SIZE, 0);
+            this.ctx.lineTo(x * CELL_SIZE, CANVAS_SIZE);
+            this.ctx.stroke();
         }
     }
 
