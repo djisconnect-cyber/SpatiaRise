@@ -192,17 +192,18 @@ class GameMaze {
     constructor(width, height) {
         this.width = width;
         this.height = height;
-        this.map = this.newMap();
-        this.origin = {x: this.width - 1, y: this.height - 1};
-        this.nextOrigin = {x: null, y: null};
+        this.map = this.newMap(); // the array of nodes defining the maze
+        this.origin = {x: this.width - 1, y: this.height - 1}; // position of the origin point
+        this.nextOrigin = {x: null, y: null}; // position of the next origin point. this is defined here to improve performance
         this.possibleDirections = [
             {x: -1, y: 0},
             {x: 0, y: -1},
             {x: 1, y: 0},
             {x: 0, y: 1}
-        ];
+        ]; // an array containing the possible directions the origin can travel in
     }
 
+    // returns a map of a valid maze
     newMap() {
         let map = [];
         for (let y = 0; y < this.height; y++) {
@@ -213,6 +214,7 @@ class GameMaze {
             map[y].push(new Node(0, 1));
         }
         map[this.height - 1][this.width - 1].setDirection(0, 0);
+
         return map;
     }
 
@@ -226,12 +228,19 @@ class GameMaze {
         this.nextOrigin.y = y;
     }
 
+    // performs one iteration of the algorithm
     iterate() {
+        // select a random direction
         let direction = this.possibleDirections[getRandomInt(0, this.possibleDirections.length)];
+
+        // check if out of bounds
         this.setNextOrigin(this.origin.x + direction.x, this.origin.y + direction.y);
         if (this.nextOrigin.x < 0 || this.nextOrigin.x >= this.width || this.nextOrigin.y < 0 || this.nextOrigin.y >= this.height) return;
 
+        // set the origin nodes direction to this direction
         this.map[this.origin.y][this.origin.x].setDirection(direction.x, direction.y);
+
+        // the node in this direction becomes the new origin node
         this.setOrigin(this.nextOrigin.x, this.nextOrigin.y);
         this.map[this.origin.y][this.origin.x].setDirection(0, 0);
     }
