@@ -88,16 +88,23 @@ function startNewMaze() {
     player = new Player(0, 0); // Start at top-left
 
     gameState = 'memorizing';
-    updateStatus('Memorize the maze! Movement starts in 5 seconds...');
+    let countdown = 5;
+    updateStatus(`Memorize the maze! Movement starts in ${countdown} seconds...`);
 
     // Clear any existing timer
     if (memorizeTimer) clearTimeout(memorizeTimer);
 
-    // Start timer to switch to playing state
-    memorizeTimer = setTimeout(() => {
-        gameState = 'playing';
-        updateStatus('Navigate to the red square! Use WASD keys or swipe on mobile.');
-    }, DISPLAY_TIME);
+    // Start countdown timer
+    memorizeTimer = setInterval(() => {
+        countdown--;
+        if (countdown > 0) {
+            updateStatus(`Memorize the maze! Movement starts in ${countdown} seconds...`);
+        } else {
+            clearInterval(memorizeTimer);
+            gameState = 'playing';
+            updateStatus('Navigate to the red square! Use WASD keys or swipe on mobile.');
+        }
+    }, 1000);
 }
 
 // Game loop
