@@ -10,11 +10,12 @@ const CANVAS_SIZE = MAZE_SIZE * CELL_SIZE;
 const DISPLAY_TIME = 5000; // 5 seconds
 
 // Game state
-let gameState = 'generating'; // 'generating', 'playing', 'gameover'
+let gameState = 'generating'; // 'generating', 'memorizing', 'playing', 'gameover'
 let score = 0;
 let maze = null;
 let player = null;
 let view = null;
+let memorizeTimer = null;
 
 // DOM elements
 let canvas, ctx, scoreDisplay, gameStatus, restartBtn;
@@ -86,8 +87,17 @@ function startNewMaze() {
 
     player = new Player(0, 0); // Start at top-left
 
-    gameState = 'playing';
-    updateStatus('Navigate to the red square! Use WASD keys or swipe on mobile.');
+    gameState = 'memorizing';
+    updateStatus('Memorize the maze! Movement starts in 5 seconds...');
+
+    // Clear any existing timer
+    if (memorizeTimer) clearTimeout(memorizeTimer);
+
+    // Start timer to switch to playing state
+    memorizeTimer = setTimeout(() => {
+        gameState = 'playing';
+        updateStatus('Navigate to the red square! Use WASD keys or swipe on mobile.');
+    }, DISPLAY_TIME);
 }
 
 // Game loop
@@ -106,8 +116,12 @@ function update() {
 function render() {
     view.clearCanvas();
 
-    if (gameState === 'playing') {
-        view.drawMaze(maze); // Always show walls
+    if (gameState === 'memorizing') {
+        view.drawMaze(maze); // Show walls only during memorizing
+        view.drawFinish(MAZE_SIZE - 1, MAZE_SIZE - 1);
+        view.drawPlayer(player);
+    } else if (gameState === 'playing') {
+        // No walls during playing, only finish and player
         view.drawFinish(MAZE_SIZE - 1, MAZE_SIZE - 1);
         view.drawPlayer(player);
     }
