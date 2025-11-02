@@ -44,8 +44,8 @@
 - [x] Add restart functionality
 
 ## Testing
-- [ ] Test maze generation for solvability
-- [ ] Test 5-second display timer
-- [ ] Test WASD movement and collision detection
-- [ ] Test scoring and maze regeneration
-- [ ] Full gameplay loop testing
+- [x] Test maze generation for solvability
+- [x] Test 5-second display timer
+- [x] Test WASD movement and collision detection
+- [x] Test scoring and maze regeneration
+- [x] Full gameplay loop testing

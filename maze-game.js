@@ -10,9 +10,8 @@ const CANVAS_SIZE = MAZE_SIZE * CELL_SIZE;
 const DISPLAY_TIME = 5000; // 5 seconds
 
 // Game state
-let gameState = 'generating'; // 'generating', 'displaying', 'playing', 'gameover'
+let gameState = 'generating'; // 'generating', 'playing', 'gameover'
 let score = 0;
-let displayTimer = 0;
 let maze = null;
 let player = null;
 let view = null;
@@ -49,10 +48,9 @@ function startNewMaze() {
     }
 
     player = new Player(0, 0); // Start at top-left
-    displayTimer = Date.now() + DISPLAY_TIME;
 
-    gameState = 'displaying';
-    updateStatus('Memorize the maze! (5 seconds)');
+    gameState = 'playing';
+    updateStatus('Navigate to the red square! Use WASD keys.');
 }
 
 // Game loop
@@ -64,20 +62,15 @@ function gameLoop() {
 
 // Update game state
 function update() {
-    if (gameState === 'displaying') {
-        if (Date.now() >= displayTimer) {
-            gameState = 'playing';
-            updateStatus('Navigate to the red square! Use WASD keys.');
-        }
-    }
+    // No timer needed - maze is always visible
 }
 
 // Render game
 function render() {
     view.clearCanvas();
 
-    if (gameState === 'displaying' || gameState === 'playing') {
-        view.drawMaze(maze, gameState === 'displaying');
+    if (gameState === 'playing') {
+        view.drawMaze(maze, true); // Always show paths
         view.drawFinish(MAZE_SIZE - 1, MAZE_SIZE - 1);
         view.drawPlayer(player);
     }
@@ -262,45 +255,32 @@ class GameView {
         this.ctx.fillRect(0, 0, this.cnv.width, this.cnv.height);
     }
 
-    drawMaze(maze, showWalls = true) {
-        if (!showWalls) return;
+    drawMaze(maze, showPaths = true) {
+        if (!showPaths) return;
 
-        this.ctx.strokeStyle = "#ffffff";
-        this.ctx.lineWidth = 2;
+        this.ctx.strokeStyle = "#00ff00"; // Green path color
+        this.ctx.lineWidth = 4;
 
+        // Draw paths by connecting cells where movement is allowed
         for (let y = 0; y < maze.height; y++) {
             for (let x = 0; x < maze.width; x++) {
                 const node = maze.map[y][x];
-                const left = x * CELL_SIZE;
-                const top = y * CELL_SIZE;
-                const right = (x + 1) * CELL_SIZE;
-                const bottom = (y + 1) * CELL_SIZE;
+                const centerX = x * CELL_SIZE + CELL_SIZE / 2;
+                const centerY = y * CELL_SIZE + CELL_SIZE / 2;
 
-                // Draw top wall
-                this.ctx.beginPath();
-                this.ctx.moveTo(left, top);
-                this.ctx.lineTo(right, top);
-                this.ctx.stroke();
-
-                // Draw left wall
-                this.ctx.beginPath();
-                this.ctx.moveTo(left, top);
-                this.ctx.lineTo(left, bottom);
-                this.ctx.stroke();
-
-                // Draw right wall if no passage to the right
-                if (node.direction.x !== 1) {
+                // Draw line to the right if passage exists
+                if (node.direction.x === 1 && x < maze.width - 1) {
                     this.ctx.beginPath();
-                    this.ctx.moveTo(right, top);
-                    this.ctx.lineTo(right, bottom);
+                    this.ctx.moveTo(centerX, centerY);
+                    this.ctx.lineTo(centerX + CELL_SIZE, centerY);
                     this.ctx.stroke();
                 }
 
-                // Draw bottom wall if no passage down
-                if (node.direction.y !== 1) {
+                // Draw line down if passage exists
+                if (node.direction.y === 1 && y < maze.height - 1) {
                     this.ctx.beginPath();
-                    this.ctx.moveTo(left, bottom);
-                    this.ctx.lineTo(right, bottom);
+                    this.ctx.moveTo(centerX, centerY);
+                    this.ctx.lineTo(centerX, centerY + CELL_SIZE);
                     this.ctx.stroke();
                 }
             }
