@@ -118,12 +118,20 @@ function movePlayer(dx, dy) {
 // Check if movement would hit a wall
 function isWallCollision(x, y, dx, dy) {
     const node = maze.map[y][x];
-    // If trying to move in opposite direction of node's direction, it's a wall
-    if ((dx === -node.direction.x && dy === -node.direction.y) ||
-        (dx === node.direction.x && dy === node.direction.y)) {
-        return false; // Can move in direction of arrow or opposite
+
+    // Check if there's a wall in the direction we want to move
+    if (dx === 1 && node.direction.x !== 1) return true; // right wall
+    if (dx === -1 && x > 0) { // left wall - check adjacent cell
+        const leftNode = maze.map[y][x - 1];
+        if (leftNode.direction.x !== 1) return true;
     }
-    return true; // Wall in other directions
+    if (dy === 1 && node.direction.y !== 1) return true; // bottom wall
+    if (dy === -1 && y > 0) { // top wall - check adjacent cell
+        const topNode = maze.map[y - 1][x];
+        if (topNode.direction.y !== 1) return true;
+    }
+
+    return false; // no wall
 }
 
 // Game over
@@ -263,35 +271,36 @@ class GameView {
         for (let y = 0; y < maze.height; y++) {
             for (let x = 0; x < maze.width; x++) {
                 const node = maze.map[y][x];
-                const xPos = x * CELL_SIZE + CELL_SIZE / 2;
-                const yPos = y * CELL_SIZE + CELL_SIZE / 2;
+                const left = x * CELL_SIZE;
+                const top = y * CELL_SIZE;
+                const right = (x + 1) * CELL_SIZE;
+                const bottom = (y + 1) * CELL_SIZE;
 
-                // Draw walls based on node directions
+                // Draw top wall
                 this.ctx.beginPath();
-                this.ctx.moveTo(xPos, yPos);
-
-                // Draw line in direction of node
-                const endX = xPos + node.direction.x * CELL_SIZE / 2;
-                const endY = yPos + node.direction.y * CELL_SIZE / 2;
-                this.ctx.lineTo(endX, endY);
+                this.ctx.moveTo(left, top);
+                this.ctx.lineTo(right, top);
                 this.ctx.stroke();
 
-                // Draw perpendicular walls (simplified representation)
-                if (node.direction.x === 0) { // vertical movement allowed
-                    // Draw horizontal walls
+                // Draw left wall
+                this.ctx.beginPath();
+                this.ctx.moveTo(left, top);
+                this.ctx.lineTo(left, bottom);
+                this.ctx.stroke();
+
+                // Draw right wall if no passage to the right
+                if (node.direction.x !== 1) {
                     this.ctx.beginPath();
-                    this.ctx.moveTo(x * CELL_SIZE, y * CELL_SIZE);
-                    this.ctx.lineTo((x + 1) * CELL_SIZE, y * CELL_SIZE);
-                    this.ctx.moveTo(x * CELL_SIZE, (y + 1) * CELL_SIZE);
-                    this.ctx.lineTo((x + 1) * CELL_SIZE, (y + 1) * CELL_SIZE);
+                    this.ctx.moveTo(right, top);
+                    this.ctx.lineTo(right, bottom);
                     this.ctx.stroke();
-                } else { // horizontal movement allowed
-                    // Draw vertical walls
+                }
+
+                // Draw bottom wall if no passage down
+                if (node.direction.y !== 1) {
                     this.ctx.beginPath();
-                    this.ctx.moveTo(x * CELL_SIZE, y * CELL_SIZE);
-                    this.ctx.lineTo(x * CELL_SIZE, (y + 1) * CELL_SIZE);
-                    this.ctx.moveTo((x + 1) * CELL_SIZE, y * CELL_SIZE);
-                    this.ctx.lineTo((x + 1) * CELL_SIZE, (y + 1) * CELL_SIZE);
+                    this.ctx.moveTo(left, bottom);
+                    this.ctx.lineTo(right, bottom);
                     this.ctx.stroke();
                 }
             }
