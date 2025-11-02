@@ -4,7 +4,7 @@ Adapted from reference code
 */
 
 // Game constants
-const MAZE_SIZE = 8;
+const MAZE_SIZE = 6;
 const CELL_SIZE = 50;
 const CANVAS_SIZE = MAZE_SIZE * CELL_SIZE;
 const DISPLAY_TIME = 5000; // 5 seconds
