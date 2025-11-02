@@ -1,51 +1,16 @@
-# Maze Game Implementation TODO
+# Update Maze Display to Show Walls Instead of Paths
 
-## Step 1: Create Game Structure
-- [x] Create `maze-game.html` with basic HTML structure, canvas, and script/css links
-- [x] Create `maze-game.js` as empty file for game logic
-- [x] Create `maze-game.css` for styling
+## Step 1: Modify drawMaze function in GameView class
+- [x] Change stroke style to white and line width to 2
+- [x] Draw outer walls around the entire maze
+- [x] Draw internal vertical walls where no horizontal path exists between adjacent cells
+- [x] Draw internal horizontal walls where no vertical path exists between adjacent cells
+- [x] Remove the showPaths parameter as walls are always displayed now
 
-## Step 2: Adapt Maze Generation
-- [x] Copy and adapt Maze and Node classes from reference `main.js`
-- [x] Modify Maze class for fixed 8x8 size
-- [x] Add start position (0,0) and finish position (7,7)
-- [x] Ensure maze generation creates solvable paths
+## Step 2: Update render call
+- [x] Change view.drawMaze(maze, true) to view.drawMaze(maze) in render function
 
-## Step 3: Implement Game States
-- [x] Add game state management ('generating', 'displaying', 'playing', 'gameover')
-- [x] Implement 5-second timer for wall display phase
-- [x] Add state transition logic
-
-## Step 4: Player Mechanics
-- [x] Create Player class with position tracking
-- [x] Implement WASD movement input
-- [x] Add collision detection against maze walls
-
-## Step 5: Rendering
-- [x] Adapt View class from reference `graphics.js`
-- [x] Draw walls only during display phase
-- [x] Render player as green circle and finish as red square
-- [x] Display current score
-
-## Step 6: Game Logic
-- [x] Handle player movement and position updates
-- [x] Check for wall collisions (trigger game over)
-- [x] Check for reaching finish (increment score, generate new maze)
-- [x] Display score on game over
-
-## Step 7: UI Elements
-- [x] Add score display element
-- [x] Add game instructions text
-- [x] Add restart button for game over state
-
-## Step 8: Event Handling
-- [x] Set up WASD key listeners for movement
-- [x] Prevent default key behaviors
-- [x] Add restart functionality
-
-## Testing
-- [x] Test maze generation for solvability
-- [x] Test 5-second display timer
-- [x] Test WASD movement and collision detection
-- [x] Test scoring and maze regeneration
-- [x] Full gameplay loop testing
+## Step 3: Test the changes
+- [x] Run the game and verify walls appear as white lines with gaps where paths should be
+- [x] Ensure player can still navigate through open paths
+- [x] Adjust wall thickness or color if needed for better visibility

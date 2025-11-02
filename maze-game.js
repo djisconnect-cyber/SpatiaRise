@@ -70,7 +70,7 @@ function render() {
     view.clearCanvas();
 
     if (gameState === 'playing') {
-        view.drawMaze(maze, true); // Always show paths
+        view.drawMaze(maze); // Always show walls
         view.drawFinish(MAZE_SIZE - 1, MAZE_SIZE - 1);
         view.drawPlayer(player);
     }
@@ -276,36 +276,38 @@ class GameView {
         this.ctx.fillRect(0, 0, this.cnv.width, this.cnv.height);
     }
 
-    drawMaze(maze, showPaths = true) {
-        if (!showPaths) return;
+    drawMaze(maze) {
+        this.ctx.strokeStyle = "#ffffff"; // White wall color
+        this.ctx.lineWidth = 2;
 
-        this.ctx.strokeStyle = "#00ff00"; // Green path color
-        this.ctx.lineWidth = 4;
+        // Draw outer walls
+        this.ctx.strokeRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
 
-        // Draw paths by following node directions (bidirectional)
+        // Draw internal walls
         for (let y = 0; y < maze.height; y++) {
             for (let x = 0; x < maze.width; x++) {
                 const node = maze.map[y][x];
-                const centerX = x * CELL_SIZE + CELL_SIZE / 2;
-                const centerY = y * CELL_SIZE + CELL_SIZE / 2;
 
-                // Draw line in the direction the node points
-                if (node.direction.x !== 0) {
-                    const targetX = centerX + node.direction.x * CELL_SIZE;
-                    if (targetX >= 0 && targetX <= CANVAS_SIZE) {
+                // Check right wall (between this cell and right neighbor)
+                if (x < maze.width - 1) {
+                    const rightNode = maze.map[y][x + 1];
+                    // Draw wall if no connection to the right
+                    if (!(node.direction.x === 1 || rightNode.direction.x === -1)) {
                         this.ctx.beginPath();
-                        this.ctx.moveTo(centerX, centerY);
-                        this.ctx.lineTo(targetX, centerY);
+                        this.ctx.moveTo((x + 1) * CELL_SIZE, y * CELL_SIZE);
+                        this.ctx.lineTo((x + 1) * CELL_SIZE, (y + 1) * CELL_SIZE);
                         this.ctx.stroke();
                     }
                 }
 
-                if (node.direction.y !== 0) {
-                    const targetY = centerY + node.direction.y * CELL_SIZE;
-                    if (targetY >= 0 && targetY <= CANVAS_SIZE) {
+                // Check bottom wall (between this cell and bottom neighbor)
+                if (y < maze.height - 1) {
+                    const bottomNode = maze.map[y + 1][x];
+                    // Draw wall if no connection downward
+                    if (!(node.direction.y === 1 || bottomNode.direction.y === -1)) {
                         this.ctx.beginPath();
-                        this.ctx.moveTo(centerX, centerY);
-                        this.ctx.lineTo(centerX, targetY);
+                        this.ctx.moveTo(x * CELL_SIZE, (y + 1) * CELL_SIZE);
+                        this.ctx.lineTo((x + 1) * CELL_SIZE, (y + 1) * CELL_SIZE);
                         this.ctx.stroke();
                     }
                 }
