@@ -112,19 +112,31 @@ function movePlayer(dx, dy) {
 function isWallCollision(x, y, dx, dy) {
     const node = maze.map[y][x];
 
-    // Check if there's a wall in the direction we want to move
-    if (dx === 1 && node.direction.x !== 1) return true; // right wall
-    if (dx === -1 && x > 0) { // left wall - check adjacent cell
-        const leftNode = maze.map[y][x - 1];
-        if (leftNode.direction.x !== 1) return true;
+    // Check if the current node points in the direction we want to move
+    if (dx === 1 && node.direction.x === 1) return false; // can move right
+    if (dx === -1 && node.direction.x === -1) return false; // can move left
+    if (dy === 1 && node.direction.y === 1) return false; // can move down
+    if (dy === -1 && node.direction.y === -1) return false; // can move up
+
+    // Check adjacent nodes for bidirectional connections
+    if (dx === 1 && x < MAZE_SIZE - 1) {
+        const rightNode = maze.map[y][x + 1];
+        if (rightNode.direction.x === -1) return false; // right node points left
     }
-    if (dy === 1 && node.direction.y !== 1) return true; // bottom wall
-    if (dy === -1 && y > 0) { // top wall - check adjacent cell
+    if (dx === -1 && x > 0) {
+        const leftNode = maze.map[y][x - 1];
+        if (leftNode.direction.x === 1) return false; // left node points right
+    }
+    if (dy === 1 && y < MAZE_SIZE - 1) {
+        const bottomNode = maze.map[y + 1][x];
+        if (bottomNode.direction.y === -1) return false; // bottom node points up
+    }
+    if (dy === -1 && y > 0) {
         const topNode = maze.map[y - 1][x];
-        if (topNode.direction.y !== 1) return true;
+        if (topNode.direction.y === 1) return false; // top node points down
     }
 
-    return false; // no wall
+    return true; // wall collision
 }
 
 // Game over
@@ -270,27 +282,32 @@ class GameView {
         this.ctx.strokeStyle = "#00ff00"; // Green path color
         this.ctx.lineWidth = 4;
 
-        // Draw paths by connecting cells where movement is allowed
+        // Draw paths by following node directions (bidirectional)
         for (let y = 0; y < maze.height; y++) {
             for (let x = 0; x < maze.width; x++) {
                 const node = maze.map[y][x];
                 const centerX = x * CELL_SIZE + CELL_SIZE / 2;
                 const centerY = y * CELL_SIZE + CELL_SIZE / 2;
 
-                // Draw line to the right if passage exists
-                if (node.direction.x === 1 && x < maze.width - 1) {
-                    this.ctx.beginPath();
-                    this.ctx.moveTo(centerX, centerY);
-                    this.ctx.lineTo(centerX + CELL_SIZE, centerY);
-                    this.ctx.stroke();
+                // Draw line in the direction the node points
+                if (node.direction.x !== 0) {
+                    const targetX = centerX + node.direction.x * CELL_SIZE;
+                    if (targetX >= 0 && targetX <= CANVAS_SIZE) {
+                        this.ctx.beginPath();
+                        this.ctx.moveTo(centerX, centerY);
+                        this.ctx.lineTo(targetX, centerY);
+                        this.ctx.stroke();
+                    }
                 }
 
-                // Draw line down if passage exists
-                if (node.direction.y === 1 && y < maze.height - 1) {
-                    this.ctx.beginPath();
-                    this.ctx.moveTo(centerX, centerY);
-                    this.ctx.lineTo(centerX, centerY + CELL_SIZE);
-                    this.ctx.stroke();
+                if (node.direction.y !== 0) {
+                    const targetY = centerY + node.direction.y * CELL_SIZE;
+                    if (targetY >= 0 && targetY <= CANVAS_SIZE) {
+                        this.ctx.beginPath();
+                        this.ctx.moveTo(centerX, centerY);
+                        this.ctx.lineTo(centerX, targetY);
+                        this.ctx.stroke();
+                    }
                 }
             }
         }
