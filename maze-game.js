@@ -32,6 +32,43 @@ function initGame() {
 
     restartBtn.addEventListener('click', restartGame);
 
+    // Add touch event listeners for swipe gestures on canvas
+    canvas.addEventListener('touchstart', (e) => {
+        if (gameState !== 'playing') return;
+        e.preventDefault();
+        const touch = e.touches[0];
+        touchStartX = touch.clientX;
+        touchStartY = touch.clientY;
+    }, { passive: false });
+
+    canvas.addEventListener('touchend', (e) => {
+        if (gameState !== 'playing') return;
+        e.preventDefault();
+        const touch = e.changedTouches[0];
+        const deltaX = touch.clientX - touchStartX;
+        const deltaY = touch.clientY - touchStartY;
+
+        // Check if swipe distance is sufficient
+        if (Math.abs(deltaX) < MIN_SWIPE_DISTANCE && Math.abs(deltaY) < MIN_SWIPE_DISTANCE) return;
+
+        // Determine swipe direction (prioritize larger delta)
+        if (Math.abs(deltaX) > Math.abs(deltaY)) {
+            // Horizontal swipe
+            if (deltaX > 0) {
+                movePlayer(1, 0); // Right
+            } else {
+                movePlayer(-1, 0); // Left
+            }
+        } else {
+            // Vertical swipe
+            if (deltaY > 0) {
+                movePlayer(0, 1); // Down
+            } else {
+                movePlayer(0, -1); // Up
+            }
+        }
+    }, { passive: false });
+
     view = new GameView();
     startNewMaze();
 }
@@ -50,7 +87,7 @@ function startNewMaze() {
     player = new Player(0, 0); // Start at top-left
 
     gameState = 'playing';
-    updateStatus('Navigate to the red square! Use WASD keys.');
+    updateStatus('Navigate to the red square! Use WASD keys or swipe on mobile.');
 }
 
 // Game loop
@@ -163,6 +200,11 @@ function updateStatus(text) {
     gameStatus.textContent = text;
 }
 
+// Touch event variables for swipe detection
+let touchStartX = 0;
+let touchStartY = 0;
+const MIN_SWIPE_DISTANCE = 30; // Minimum pixels for a swipe
+
 // Event listeners
 document.addEventListener('keydown', (e) => {
     if (gameState !== 'playing') return;
@@ -186,6 +228,8 @@ document.addEventListener('keydown', (e) => {
             break;
     }
 });
+
+
 
 // Adapted classes from reference code
 
