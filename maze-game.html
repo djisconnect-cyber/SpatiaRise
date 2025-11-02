@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maze Game - Origin Shift</title>
+    <link rel="stylesheet" href="maze-game.css">
+</head>
+<body>
+    <div id="game-container">
+        <h1>Maze Game</h1>
+        <div id="score-display">Score: 0</div>
+        <canvas id="game-canvas"></canvas>
+        <div id="instructions">
+            <p>Use WASD keys to move. Avoid walls!</p>
+            <p id="game-status">Generating maze...</p>
+        </div>
+        <button id="restart-btn" style="display: none;">Restart Game</button>
+    </div>
+
+    <script src="maze-game.js"></script>
+</body>
+</html>
