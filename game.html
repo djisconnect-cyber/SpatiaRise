@@ -4,11 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SpatiaRise</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="maze-game.css">
 </head>
 <body>
     <header id="top-bar">
-        <img src="media/img/Spatiarise.png" alt="SpatiaRise Logo" id="logo">
+        <div id="left-section">
+            <button id="home-btn" onclick="window.location.href='index.html'">
+                <i class="fas fa-home"></i> Home
+            </button>
+        </div>
+        <div id="center-section">
+            <img src="media/img/Spatiarise.png" alt="SpatiaRise Logo" id="logo">
+        </div>
+        <div id="right-section"></div>
     </header>
     <div id="game-container">
         <h1>Memory Maze</h1>
