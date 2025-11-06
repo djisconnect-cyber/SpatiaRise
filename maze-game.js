@@ -247,29 +247,43 @@ const MIN_SWIPE_DISTANCE = 30; // Minimum pixels for a swipe
 
 // Event listeners
 document.addEventListener('keydown', (e) => {
-    if (gameState !== 'playing') return;
-
-    switch (e.key.toLowerCase()) {
-        case 'w':
-        case 'arrowup':
-            e.preventDefault();
-            movePlayer(0, -1);
-            break;
-        case 's':
-        case 'arrowdown':
-            e.preventDefault();
-            movePlayer(0, 1);
-            break;
-        case 'a':
-        case 'arrowleft':
-            e.preventDefault();
-            movePlayer(-1, 0);
-            break;
-        case 'd':
-        case 'arrowright':
-            e.preventDefault();
-            movePlayer(1, 0);
-            break;
+    if (gameState === 'playing') {
+        switch (e.key.toLowerCase()) {
+            case 'w':
+            case 'arrowup':
+                e.preventDefault();
+                movePlayer(0, -1);
+                break;
+            case 's':
+            case 'arrowdown':
+                e.preventDefault();
+                movePlayer(0, 1);
+                break;
+            case 'a':
+            case 'arrowleft':
+                e.preventDefault();
+                movePlayer(-1, 0);
+                break;
+            case 'd':
+            case 'arrowright':
+                e.preventDefault();
+                movePlayer(1, 0);
+                break;
+        }
+    } else if (gameState === 'gameover') {
+        switch (e.key.toLowerCase()) {
+            case 'w':
+            case 'a':
+            case 's':
+            case 'd':
+            case 'arrowup':
+            case 'arrowdown':
+            case 'arrowleft':
+            case 'arrowright':
+                e.preventDefault();
+                restartGame();
+                break;
+        }
     }
 });
 
