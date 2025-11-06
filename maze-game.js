@@ -379,7 +379,7 @@ class GameView {
     }
 
     drawMaze(maze) {
-        this.ctx.strokeStyle = "#E82441"; // Red wall color
+        this.ctx.strokeStyle = "#BF3853"; // Wall color
         this.ctx.lineWidth = 3; // Increased thickness for better visibility
 
         // Draw outer walls
