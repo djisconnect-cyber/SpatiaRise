@@ -1,4 +1,3 @@
-# TODO List for Updating Button Links in index.html
+# TODO: Remove Buttons from index.html
 
-- [x] Change onclick attribute of "Start Learning Now" button from 'spatiarise.html' to 'game.html'
-- [ ] Change onclick attribute of "Start Your Journey" button from 'spatiarise.html' to 'game.html'
+- [x] Remove the "Log in" and "Get Started" buttons from the header navigation in index.html
