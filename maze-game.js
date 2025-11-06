@@ -138,8 +138,11 @@ function render() {
         view.drawMaze(maze); // Draw walls on top
         view.drawFinish(MAZE_SIZE - 1, MAZE_SIZE - 1);
         view.drawPlayer(player);
-        // Add red semi-transparent overlay
-        ctx.fillStyle = "rgba(255, 0, 0, 0.5)";
+        // Add radial gradient overlay: dark red at edges, transparent in center
+        const gradient = ctx.createRadialGradient(CANVAS_SIZE / 2, CANVAS_SIZE / 2, 0, CANVAS_SIZE / 2, CANVAS_SIZE / 2, CANVAS_SIZE / 2);
+        gradient.addColorStop(0, 'transparent');
+        gradient.addColorStop(1, 'rgba(139, 0, 0, 0.5)');
+        ctx.fillStyle = gradient;
         ctx.fillRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
     }
 
