@@ -20,14 +20,7 @@
         <button id="restart-btn" style="display: none;">Restart Game</button>
     </div>
 
-    <script>
-        // Check if accessed directly or refreshed, redirect to homepage
-        if (sessionStorage.getItem('fromHomepage') !== 'true') {
-            window.location.href = 'index.html';
-        }
-        // Clear the flag after checking
-        sessionStorage.removeItem('fromHomepage');
-    </script>
+
     <script src="maze-game.js"></script>
 </body>
 </html>
