@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SpatiaRise</title>
+    <link rel="stylesheet" href="maze-game.css">
+</head>
+<body>
+    <header id="top-bar">
+        <img src="media/img/Spatiarise.png" alt="SpatiaRise Logo" id="logo">
+    </header>
+    <div id="game-container">
+        <h1>Memory Maze</h1>
+        <div id="score-display">Score: 0</div>
+        <canvas id="game-canvas"></canvas>
+        <div id="instructions">
+            <p id="game-status">Generating maze...</p>
+        </div>
+        <button id="restart-btn" style="display: none;">Restart Game</button>
+    </div>
+
+    <script>
+        // Check if accessed directly or refreshed, redirect to homepage
+        if (sessionStorage.getItem('fromHomepage') !== 'true') {
+            window.location.href = 'index.html';
+        }
+        // Clear the flag after checking
+        sessionStorage.removeItem('fromHomepage');
+    </script>
+    <script src="maze-game.js"></script>
+</body>
+</html>
