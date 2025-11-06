@@ -360,12 +360,12 @@ class GameView {
     }
 
     clearCanvas() {
-        this.ctx.fillStyle = "#1a1a1a";
+        this.ctx.fillStyle = "#ffe6ea";
         this.ctx.fillRect(0, 0, this.cnv.width, this.cnv.height);
     }
 
     drawMaze(maze) {
-        this.ctx.strokeStyle = "#ffffff"; // White wall color
+        this.ctx.strokeStyle = "#E82441"; // Red wall color
         this.ctx.lineWidth = 3; // Increased thickness for better visibility
 
         // Draw outer walls
@@ -404,7 +404,7 @@ class GameView {
     }
 
     drawGrid() {
-        this.ctx.strokeStyle = "#333333"; // Dark gray grid lines
+        this.ctx.strokeStyle = "#ffb6c1"; // Pink grid lines to match theme
         this.ctx.lineWidth = 1;
 
         // Draw horizontal grid lines
