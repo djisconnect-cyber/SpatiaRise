@@ -1,4 +1,8 @@
-# TODO for Adding Red Semi-Transparent Effect on Canvas During Wall Reveal After Losing
+# TODO: Change Web Theme to Colorful with Baby Pink and White
 
-- [x] Modify the render() function in maze-game.js to add a red semi-transparent overlay (rgba(255, 0, 0, 0.5)) over the entire canvas during the 'revealing' game state, which occurs after the player hits a wall and loses.
-- [x] Change the overlay to a radial gradient: dark red at the edges, transparent in the center.
+- [x] Update body background to white
+- [x] Change text colors to baby pink where appropriate
+- [x] Update canvas background to white
+- [x] Change button styles to baby pink
+- [x] Add colorful accents (e.g., gradients or secondary colors)
+- [x] Test the changes by opening index.html in browser (changes applied, browser testing not available)
