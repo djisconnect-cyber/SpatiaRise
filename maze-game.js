@@ -102,7 +102,7 @@ function startNewMaze() {
         } else {
             clearInterval(memorizeTimer);
             gameState = 'playing';
-            updateStatus('Navigate to the red square! Use WASD keys or swipe on mobile.');
+            updateStatus('Navigate to the red square! Use WASD or arrow keys, or swipe on mobile.');
         }
     }, 1000);
 }
@@ -234,18 +234,22 @@ document.addEventListener('keydown', (e) => {
 
     switch (e.key.toLowerCase()) {
         case 'w':
+        case 'arrowup':
             e.preventDefault();
             movePlayer(0, -1);
             break;
         case 's':
+        case 'arrowdown':
             e.preventDefault();
             movePlayer(0, 1);
             break;
         case 'a':
+        case 'arrowleft':
             e.preventDefault();
             movePlayer(-1, 0);
             break;
         case 'd':
+        case 'arrowright':
             e.preventDefault();
             movePlayer(1, 0);
             break;
