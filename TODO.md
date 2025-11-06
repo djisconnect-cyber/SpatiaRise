@@ -1,9 +1,3 @@
-# Maze Wall Visibility Task
+# TODO for Adding Red Semi-Transparent Effect on Canvas During Wall Reveal After Losing
 
-## Steps to Complete
-- [x] Add 'memorizing' game state
-- [x] Modify startNewMaze to set 'memorizing' state and start 5-second timer
-- [x] Update render() to draw walls only during 'memorizing' state
-- [x] Update movePlayer() to only allow movement in 'playing' state
-- [x] Update status messages for 'memorizing' phase
-- [x] Test the game functionality
+- [x] Modify the render() function in maze-game.js to add a red semi-transparent overlay (rgba(255, 0, 0, 0.5)) over the entire canvas during the 'revealing' game state, which occurs after the player hits a wall and loses.

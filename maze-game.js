@@ -138,6 +138,9 @@ function render() {
         view.drawMaze(maze); // Draw walls on top
         view.drawFinish(MAZE_SIZE - 1, MAZE_SIZE - 1);
         view.drawPlayer(player);
+        // Add red semi-transparent overlay
+        ctx.fillStyle = "rgba(255, 0, 0, 0.5)";
+        ctx.fillRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
     }
 
     if (gameState === 'gameover') {
