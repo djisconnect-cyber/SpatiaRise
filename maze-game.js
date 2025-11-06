@@ -10,7 +10,7 @@ const CANVAS_SIZE = MAZE_SIZE * CELL_SIZE;
 const DISPLAY_TIME = 5000; // 5 seconds
 
 // Game state
-let gameState = 'generating'; // 'generating', 'memorizing', 'playing', 'gameover'
+let gameState = 'generating'; // 'generating', 'memorizing', 'playing', 'revealing', 'gameover'
 let score = 0;
 let maze = null;
 let player = null;
@@ -133,6 +133,11 @@ function render() {
         view.drawGrid(); // Show grid lines
         view.drawFinish(MAZE_SIZE - 1, MAZE_SIZE - 1);
         view.drawPlayer(player);
+    } else if (gameState === 'revealing') {
+        view.drawGrid(); // Draw grid lines first
+        view.drawMaze(maze); // Draw walls on top
+        view.drawFinish(MAZE_SIZE - 1, MAZE_SIZE - 1);
+        view.drawPlayer(player);
     }
 
     if (gameState === 'gameover') {
@@ -201,9 +206,15 @@ function isWallCollision(x, y, dx, dy) {
 
 // Game over
 function gameOver() {
-    gameState = 'gameover';
-    updateStatus('Game Over! Click Restart to play again.');
-    restartBtn.style.display = 'block';
+    gameState = 'revealing';
+    updateStatus('Maze revealed! Showing your progress...');
+
+    // Reveal the maze for 3 seconds, then game over
+    setTimeout(() => {
+        gameState = 'gameover';
+        updateStatus('Game Over! Click Restart to play again.');
+        restartBtn.style.display = 'block';
+    }, 3000);
 }
 
 // Restart game
