@@ -374,7 +374,7 @@ class GameView {
     }
 
     clearCanvas() {
-        this.ctx.fillStyle = "#ffe6ea";
+        this.ctx.fillStyle = "#FDECEF";
         this.ctx.fillRect(0, 0, this.cnv.width, this.cnv.height);
     }
 
