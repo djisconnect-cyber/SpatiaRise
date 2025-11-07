@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Math Maze - SpatiaRise</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="maze-game.css">
+</head>
+<body>
+    <header id="top-bar">
+        <div id="left-section">
+            <button id="home-btn" onclick="window.location.href='games.html'">
+                <i class="fas fa-bars"></i> Menu
+            </button>
+        </div>
+        <div id="center-section">
+            <img src="media/img/Spatiarise.png" alt="SpatiaRise Logo" id="logo">
+        </div>
+        <div id="right-section"></div>
+    </header>
+    <div id="game-container">
+        <h1>Math Maze</h1>
+        <div id="score-display">Score: 0</div>
+        <canvas id="game-canvas"></canvas>
+        <div id="instructions">
+            <p id="game-status">Generating maze...</p>
+        </div>
+        <button id="restart-btn" style="display: none;">Restart Game</button>
+    </div>
+
+
+    <script src="math-maze.js"></script>
+</body>
+</html>
