@@ -4,10 +4,10 @@ Adapted from reference code
 */
 
 // Game constants
-const MAZE_SIZE = 6;
+const MAZE_SIZE = 8;
 const CELL_SIZE = 50;
 const CANVAS_SIZE = MAZE_SIZE * CELL_SIZE;
-const DISPLAY_TIME = 5000; // 5 seconds
+const DISPLAY_TIME = 100000; // 5 seconds
 
 // Game state
 let gameState = 'generating'; // 'generating', 'memorizing', 'playing', 'revealing', 'gameover'
