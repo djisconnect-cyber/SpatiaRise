@@ -105,9 +105,30 @@ h1 {
     color: #ffb6c1;
 }
 
+#legend {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-bottom: 10px;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 14px;
+    color: #333333;
+}
+
+.legend-color {
+    width: 20px;
+    height: 20px;
+    border-radius: 3px;
+}
+
 #game-status {
     font-style: italic;
-    color: #ffb6c1;
+    color: #bf3853;
     margin-bottom: 10px;
 }
 

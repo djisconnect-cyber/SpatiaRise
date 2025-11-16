@@ -4,7 +4,7 @@ Adapted from reference code
 */
 
 // Game constants
-const MAZE_SIZE = 7;
+const MAZE_SIZE = 5;
 const CELL_SIZE = 50;
 const CANVAS_SIZE = MAZE_SIZE * CELL_SIZE;
 
@@ -63,7 +63,7 @@ function startNewMaze() {
     shortestPathSum = maze.getShortestPathSum();
 
     gameState = 'displaying_maze';
-    updateStatus('Find the sum of the shortest path from top-left to bottom-right and enter it below.');
+    updateStatus('Find the sum of the shortest path from start to finish.');
     document.getElementById('input-section').style.display = 'flex';
 }
 
@@ -299,6 +299,10 @@ class GameView {
             }
         }
 
+        // Draw start and finish markers
+        this.drawStart(0, 0);
+        this.drawFinish(maze.width - 1, maze.height - 1);
+
         // Draw numbers on tiles
         this.ctx.fillStyle = "#333333"; // Dark text for contrast
         this.ctx.font = "20px Arial";
@@ -337,21 +341,18 @@ class GameView {
         }
     }
 
-    drawPlayer(player) {
-        this.ctx.fillStyle = "#00ff00";
-        this.ctx.beginPath();
-        this.ctx.arc(
-            player.x * CELL_SIZE + CELL_SIZE / 2,
-            player.y * CELL_SIZE + CELL_SIZE / 2,
-            CELL_SIZE / 4,
-            0,
-            2 * Math.PI
+    drawStart(x, y) {
+        this.ctx.fillStyle = "#00ff00"; // Green for start
+        this.ctx.fillRect(
+            x * CELL_SIZE + CELL_SIZE / 4,
+            y * CELL_SIZE + CELL_SIZE / 4,
+            CELL_SIZE / 2,
+            CELL_SIZE / 2
         );
-        this.ctx.fill();
     }
 
     drawFinish(x, y) {
-        this.ctx.fillStyle = "#ff0000";
+        this.ctx.fillStyle = "#ff0000"; // Red for finish
         this.ctx.fillRect(
             x * CELL_SIZE + CELL_SIZE / 4,
             y * CELL_SIZE + CELL_SIZE / 4,
