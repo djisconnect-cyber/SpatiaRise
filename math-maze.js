@@ -4,21 +4,17 @@ Adapted from reference code
 */
 
 // Game constants
-const MAZE_SIZE = 8;
+const MAZE_SIZE = 7;
 const CELL_SIZE = 50;
 const CANVAS_SIZE = MAZE_SIZE * CELL_SIZE;
-const DISPLAY_TIME = 100000; // 5 seconds
 
 // Game state
-let gameState = 'generating'; // 'generating', 'memorizing', 'playing', 'revealing', 'gameover'
-let score = 0;
+let gameState = 'generating'; // 'generating', 'displaying'
 let maze = null;
-let player = null;
 let view = null;
-let memorizeTimer = null;
 
 // DOM elements
-let canvas, ctx, scoreDisplay, gameStatus, restartBtn;
+let canvas, ctx, gameStatus;
 
 // Initialize game
 function initGame() {
@@ -27,48 +23,7 @@ function initGame() {
     canvas.width = CANVAS_SIZE;
     canvas.height = CANVAS_SIZE;
 
-    scoreDisplay = document.getElementById('score-display');
     gameStatus = document.getElementById('game-status');
-    restartBtn = document.getElementById('restart-btn');
-
-    restartBtn.addEventListener('click', restartGame);
-
-    // Add touch event listeners for swipe gestures on canvas
-    canvas.addEventListener('touchstart', (e) => {
-        if (gameState !== 'playing') return;
-        e.preventDefault();
-        const touch = e.touches[0];
-        touchStartX = touch.clientX;
-        touchStartY = touch.clientY;
-    }, { passive: false });
-
-    canvas.addEventListener('touchend', (e) => {
-        if (gameState !== 'playing') return;
-        e.preventDefault();
-        const touch = e.changedTouches[0];
-        const deltaX = touch.clientX - touchStartX;
-        const deltaY = touch.clientY - touchStartY;
-
-        // Check if swipe distance is sufficient
-        if (Math.abs(deltaX) < MIN_SWIPE_DISTANCE && Math.abs(deltaY) < MIN_SWIPE_DISTANCE) return;
-
-        // Determine swipe direction (prioritize larger delta)
-        if (Math.abs(deltaX) > Math.abs(deltaY)) {
-            // Horizontal swipe
-            if (deltaX > 0) {
-                movePlayer(1, 0); // Right
-            } else {
-                movePlayer(-1, 0); // Left
-            }
-        } else {
-            // Vertical swipe
-            if (deltaY > 0) {
-                movePlayer(0, 1); // Down
-            } else {
-                movePlayer(0, -1); // Up
-            }
-        }
-    }, { passive: false });
 
     view = new GameView();
     startNewMaze();
@@ -85,26 +40,8 @@ function startNewMaze() {
         maze.iterate();
     }
 
-    player = new Player(0, 0); // Start at top-left
-
-    gameState = 'memorizing';
-    let countdown = 5;
-    updateStatus(`Memorize the maze! Movement starts in ${countdown} seconds...`);
-
-    // Clear any existing timer
-    if (memorizeTimer) clearTimeout(memorizeTimer);
-
-    // Start countdown timer
-    memorizeTimer = setInterval(() => {
-        countdown--;
-        if (countdown > 0) {
-            updateStatus(`Memorize the maze! Movement starts in ${countdown} seconds...`);
-        } else {
-            clearInterval(memorizeTimer);
-            gameState = 'playing';
-            updateStatus('Navigate to the red square! Use WASD or arrow keys, or swipe on mobile.');
-        }
-    }, 1000);
+    gameState = 'displaying';
+    updateStatus('Maze generated! Displaying the maze.');
 }
 
 // Game loop
@@ -123,169 +60,16 @@ function update() {
 function render() {
     view.clearCanvas();
 
-    if (gameState === 'memorizing') {
+    if (gameState === 'displaying') {
         view.drawGrid(); // Draw grid lines first
         view.drawMaze(maze); // Draw walls on top
-        view.drawFinish(MAZE_SIZE - 1, MAZE_SIZE - 1);
-        view.drawPlayer(player);
-    } else if (gameState === 'playing') {
-        // No walls during playing, only grid, finish and player
-        view.drawGrid(); // Show grid lines
-        view.drawFinish(MAZE_SIZE - 1, MAZE_SIZE - 1);
-        view.drawPlayer(player);
-    } else if (gameState === 'revealing') {
-        view.drawGrid(); // Draw grid lines first
-        view.drawMaze(maze); // Draw walls on top
-        view.drawFinish(MAZE_SIZE - 1, MAZE_SIZE - 1);
-        view.drawPlayer(player);
-        // Add radial gradient overlay: dark red at edges, transparent in center
-        const gradient = ctx.createRadialGradient(CANVAS_SIZE / 2, CANVAS_SIZE / 2, 0, CANVAS_SIZE / 2, CANVAS_SIZE / 2, CANVAS_SIZE / 2);
-        gradient.addColorStop(0, 'transparent');
-        gradient.addColorStop(1, 'rgba(139, 0, 0, 0.5)');
-        ctx.fillStyle = gradient;
-        ctx.fillRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
-    }
-
-    if (gameState === 'gameover') {
-        view.drawGameOver();
     }
 }
 
-// Handle player movement
-function movePlayer(dx, dy) {
-    if (gameState !== 'playing') return;
-
-    const newX = player.x + dx;
-    const newY = player.y + dy;
-
-    // Check bounds
-    if (newX < 0 || newX >= MAZE_SIZE || newY < 0 || newY >= MAZE_SIZE) return;
-
-    // Check collision with walls
-    if (isWallCollision(player.x, player.y, dx, dy)) {
-        gameOver();
-        return;
-    }
-
-    // Move player
-    player.x = newX;
-    player.y = newY;
-
-    // Check if reached finish
-    if (player.x === MAZE_SIZE - 1 && player.y === MAZE_SIZE - 1) {
-        score++;
-        updateScore();
-        startNewMaze();
-    }
-}
-
-// Check if movement would hit a wall
-function isWallCollision(x, y, dx, dy) {
-    const node = maze.map[y][x];
-
-    // Check if the current node points in the direction we want to move
-    if (dx === 1 && node.direction.x === 1) return false; // can move right
-    if (dx === -1 && node.direction.x === -1) return false; // can move left
-    if (dy === 1 && node.direction.y === 1) return false; // can move down
-    if (dy === -1 && node.direction.y === -1) return false; // can move up
-
-    // Check adjacent nodes for bidirectional connections
-    if (dx === 1 && x < MAZE_SIZE - 1) {
-        const rightNode = maze.map[y][x + 1];
-        if (rightNode.direction.x === -1) return false; // right node points left
-    }
-    if (dx === -1 && x > 0) {
-        const leftNode = maze.map[y][x - 1];
-        if (leftNode.direction.x === 1) return false; // left node points right
-    }
-    if (dy === 1 && y < MAZE_SIZE - 1) {
-        const bottomNode = maze.map[y + 1][x];
-        if (bottomNode.direction.y === -1) return false; // bottom node points up
-    }
-    if (dy === -1 && y > 0) {
-        const topNode = maze.map[y - 1][x];
-        if (topNode.direction.y === 1) return false; // top node points down
-    }
-
-    return true; // wall collision
-}
-
-// Game over
-function gameOver() {
-    gameState = 'revealing';
-    updateStatus('Maze revealed! Showing your progress...');
-
-    // Reveal the maze for 3 seconds, then game over
-    setTimeout(() => {
-        gameState = 'gameover';
-        updateStatus('Game Over! Click Restart to play again.');
-        restartBtn.style.display = 'block';
-    }, 3000);
-}
-
-// Restart game
-function restartGame() {
-    score = 0;
-    updateScore();
-    restartBtn.style.display = 'none';
-    startNewMaze();
-}
-
-// Update UI
-function updateScore() {
-    scoreDisplay.textContent = `Score: ${score}`;
-}
 
 function updateStatus(text) {
     gameStatus.textContent = text;
 }
-
-// Touch event variables for swipe detection
-let touchStartX = 0;
-let touchStartY = 0;
-const MIN_SWIPE_DISTANCE = 30; // Minimum pixels for a swipe
-
-// Event listeners
-document.addEventListener('keydown', (e) => {
-    if (gameState === 'playing') {
-        switch (e.key.toLowerCase()) {
-            case 'w':
-            case 'arrowup':
-                e.preventDefault();
-                movePlayer(0, -1);
-                break;
-            case 's':
-            case 'arrowdown':
-                e.preventDefault();
-                movePlayer(0, 1);
-                break;
-            case 'a':
-            case 'arrowleft':
-                e.preventDefault();
-                movePlayer(-1, 0);
-                break;
-            case 'd':
-            case 'arrowright':
-                e.preventDefault();
-                movePlayer(1, 0);
-                break;
-        }
-    } else if (gameState === 'gameover') {
-        switch (e.key.toLowerCase()) {
-            case 'w':
-            case 'a':
-            case 's':
-            case 'd':
-            case 'arrowup':
-            case 'arrowdown':
-            case 'arrowleft':
-            case 'arrowright':
-                e.preventDefault();
-                restartGame();
-                break;
-        }
-    }
-});
 
 
 
@@ -360,12 +144,7 @@ class GameMaze {
     }
 }
 
-class Player {
-    constructor(x, y) {
-        this.x = x;
-        this.y = y;
-    }
-}
+
 
 class GameView {
     constructor() {

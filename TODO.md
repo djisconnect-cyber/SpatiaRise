@@ -1,3 +1,7 @@
-# TODO: Remove Buttons from index.html
-
-- [x] Remove the "Log in" and "Get Started" buttons from the header navigation in index.html
+- [ ] Remove player-related variables and functions (player, movePlayer, isWallCollision, gameOver, restartGame, event listeners for movement)
+- [ ] Simplify game states to 'generating' and 'displaying'
+- [ ] Update initGame to remove player init and movement event listeners
+- [ ] Update startNewMaze to only generate maze and set to displaying
+- [ ] Update render to only draw maze and grid
+- [ ] Remove score, restartBtn, and related UI updates
+- [ ] Test the modified game to ensure maze generates and displays correctly
