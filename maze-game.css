@@ -108,6 +108,51 @@ h1 {
 #game-status {
     font-style: italic;
     color: #ffb6c1;
+    margin-bottom: 10px;
+}
+
+#input-section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+#input-box {
+    padding: 8px 12px;
+    border: 2px solid #ffb6c1;
+    border-radius: 20px;
+    font-size: 16px;
+    text-align: center;
+    width: 120px;
+    background-color: #ffffff;
+    color: #333333;
+    outline: none;
+    transition: border-color 0.3s ease;
+}
+
+#input-box:focus {
+    border-color: #ff69b4;
+}
+
+#submit-btn {
+    padding: 8px 16px;
+    background: linear-gradient(135deg, #ffb6c1 0%, #ff69b4 100%);
+    color: #ffffff;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    box-shadow: 0 2px 4px rgba(255, 182, 193, 0.3);
+    transition: all 0.3s ease;
+}
+
+#submit-btn:hover {
+    background: linear-gradient(135deg, #ff69b4 0%, #ffb6c1 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(255, 182, 193, 0.5);
 }
 
 #restart-btn {
