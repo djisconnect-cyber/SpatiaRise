@@ -33,7 +33,7 @@ function initGame() {
 
     // Set up event listeners
     submitBtn.addEventListener('click', checkAnswer);
-    restartBtn.addEventListener('click', startNewMaze);
+    restartBtn.addEventListener('click', () => startNewMaze(true));
     inputBox.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') {
             checkAnswer();
@@ -45,13 +45,15 @@ function initGame() {
 }
 
 // Start a new maze
-function startNewMaze() {
+function startNewMaze(resetScore = false) {
     gameState = 'generating';
     updateStatus('Generating maze...');
     document.getElementById('input-section').style.display = 'none';
     document.getElementById('restart-btn').style.display = 'none';
-    score = 0;
-    updateScore();
+    if (resetScore) {
+        score = 0;
+        updateScore();
+    }
 
     maze = new GameMaze(MAZE_SIZE, MAZE_SIZE);
     // Generate maze with many iterations for complexity
