@@ -16,6 +16,8 @@ let maze = null;
 let player = null;
 let view = null;
 let memorizeTimer = null;
+let finishX = MAZE_SIZE - 1;
+let finishY = MAZE_SIZE - 1;
 
 // DOM elements
 let canvas, ctx, scoreDisplay, gameStatus, restartBtn;
@@ -85,7 +87,21 @@ function startNewMaze() {
         maze.iterate();
     }
 
-    player = new Player(0, 0); // Start at top-left
+    // Randomize finish position
+    finishX = getRandomInt(0, MAZE_SIZE);
+    finishY = getRandomInt(0, MAZE_SIZE);
+
+    // Randomize player position
+    let playerX = getRandomInt(0, MAZE_SIZE);
+    let playerY = getRandomInt(0, MAZE_SIZE);
+
+    // Ensure player and finish are not at the same position
+    while ((playerX === finishX && playerY === finishY)) {
+        playerX = getRandomInt(0, MAZE_SIZE);
+        playerY = getRandomInt(0, MAZE_SIZE);
+    }
+
+    player = new Player(playerX, playerY);
 
     gameState = 'memorizing';
     let countdown = 5;
@@ -126,17 +142,17 @@ function render() {
     if (gameState === 'memorizing') {
         view.drawGrid(); // Draw grid lines first
         view.drawMaze(maze); // Draw walls on top
-        view.drawFinish(MAZE_SIZE - 1, MAZE_SIZE - 1);
+        view.drawFinish(finishX, finishY);
         view.drawPlayer(player);
     } else if (gameState === 'playing') {
         // No walls during playing, only grid, finish and player
         view.drawGrid(); // Show grid lines
-        view.drawFinish(MAZE_SIZE - 1, MAZE_SIZE - 1);
+        view.drawFinish(finishX, finishY);
         view.drawPlayer(player);
     } else if (gameState === 'revealing') {
         view.drawGrid(); // Draw grid lines first
         view.drawMaze(maze); // Draw walls on top
-        view.drawFinish(MAZE_SIZE - 1, MAZE_SIZE - 1);
+        view.drawFinish(finishX, finishY);
         view.drawPlayer(player);
         // Add radial gradient overlay: dark red at edges, transparent in center
         const gradient = ctx.createRadialGradient(CANVAS_SIZE / 2, CANVAS_SIZE / 2, 0, CANVAS_SIZE / 2, CANVAS_SIZE / 2, CANVAS_SIZE / 2);
@@ -172,7 +188,7 @@ function movePlayer(dx, dy) {
     player.y = newY;
 
     // Check if reached finish
-    if (player.x === MAZE_SIZE - 1 && player.y === MAZE_SIZE - 1) {
+    if (player.x === finishX && player.y === finishY) {
         score++;
         updateScore();
         startNewMaze();
