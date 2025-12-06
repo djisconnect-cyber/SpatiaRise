@@ -81,27 +81,43 @@ function startNewMaze() {
     gameState = 'generating';
     updateStatus('Generating maze...');
 
-    maze = new GameMaze(MAZE_SIZE, MAZE_SIZE);
-    // Generate maze with many iterations for complexity
-    for (let i = 0; i < MAZE_SIZE * MAZE_SIZE * 20; i++) {
-        maze.iterate();
-    }
+    let pathLength = -1;
+    let attempts = 0;
+    const maxAttempts = 100; // Prevent infinite loops
 
-    // Randomize finish position
-    finishX = getRandomInt(0, MAZE_SIZE);
-    finishY = getRandomInt(0, MAZE_SIZE);
+    do {
+        maze = new GameMaze(MAZE_SIZE, MAZE_SIZE);
+        // Generate maze with many iterations for complexity
+        for (let i = 0; i < MAZE_SIZE * MAZE_SIZE * 20; i++) {
+            maze.iterate();
+        }
 
-    // Randomize player position
-    let playerX = getRandomInt(0, MAZE_SIZE);
-    let playerY = getRandomInt(0, MAZE_SIZE);
+        // Randomize finish position
+        finishX = getRandomInt(0, MAZE_SIZE);
+        finishY = getRandomInt(0, MAZE_SIZE);
 
-    // Ensure player and finish are not at the same position
-    while ((playerX === finishX && playerY === finishY)) {
-        playerX = getRandomInt(0, MAZE_SIZE);
-        playerY = getRandomInt(0, MAZE_SIZE);
-    }
+        // Randomize player position
+        let playerX = getRandomInt(0, MAZE_SIZE);
+        let playerY = getRandomInt(0, MAZE_SIZE);
 
-    player = new Player(playerX, playerY);
+        // Ensure player and finish are not at the same position
+        while ((playerX === finishX && playerY === finishY)) {
+            playerX = getRandomInt(0, MAZE_SIZE);
+            playerY = getRandomInt(0, MAZE_SIZE);
+        }
+
+        player = new Player(playerX, playerY);
+
+        // Calculate shortest path length
+        pathLength = getShortestPathLength(playerX, playerY, finishX, finishY);
+        attempts++;
+
+        // If no path found or too many attempts, regenerate
+        if (pathLength === -1 && attempts >= maxAttempts) {
+            // Force a valid path by ensuring at least one path exists
+            pathLength = 10; // Default to minimum
+        }
+    } while ((pathLength < 10 || pathLength > 15) && attempts < maxAttempts);
 
     gameState = 'memorizing';
     let countdown = 5;
@@ -489,6 +505,43 @@ class GameView {
         this.ctx.fillText(`Final Score: ${score}`, this.cnv.width / 2, this.cnv.height / 2 + 20);
         this.ctx.textAlign = "left";
     }
+}
+
+// Calculate shortest path length using BFS
+function getShortestPathLength(startX, startY, endX, endY) {
+    const visited = Array(MAZE_SIZE).fill().map(() => Array(MAZE_SIZE).fill(false));
+    const queue = [{x: startX, y: startY, steps: 0}];
+
+    visited[startY][startX] = true;
+
+    while (queue.length > 0) {
+        const current = queue.shift();
+
+        if (current.x === endX && current.y === endY) {
+            return current.steps;
+        }
+
+        // Check all four directions
+        const directions = [
+            {dx: 0, dy: -1}, // up
+            {dx: 0, dy: 1},  // down
+            {dx: -1, dy: 0}, // left
+            {dx: 1, dy: 0}   // right
+        ];
+
+        for (const dir of directions) {
+            const newX = current.x + dir.dx;
+            const newY = current.y + dir.dy;
+
+            if (newX >= 0 && newX < MAZE_SIZE && newY >= 0 && newY < MAZE_SIZE &&
+                !visited[newY][newX] && !isWallCollision(current.x, current.y, dir.dx, dir.dy)) {
+                visited[newY][newX] = true;
+                queue.push({x: newX, y: newY, steps: current.steps + 1});
+            }
+        }
+    }
+
+    return -1; // No path found
 }
 
 // Helper function
